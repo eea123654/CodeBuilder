@@ -47,7 +47,7 @@
                     <span class="close" data-close="note"></span>
                 </h3>
                 <p> 一个简单的代码生成器，可快速构建出mvc三层结构，大幅提升开发效率。</p>
-                <p><span class="label label-danger">提示:</span>  以上为理想状态，最近拖延症晚期，随时可能弃坑……。
+                <p><span class="label label-danger">提示:</span>  以上为理想状态，最近拖延症晚期，随时可能弃坑……
                 </p>
             </div>
         </div>
@@ -114,6 +114,27 @@
 
         </div>-->
 
+
+        <div class="showing">
+            <h2>遍历</h2>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>产品名称</th>
+                    <th>价格</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p: ${cs}">
+                    <td th:text="${p.id}"></td>
+                    <td th:text="${p.name}"></td>
+                    <td th:text="${p.no}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
 
 
