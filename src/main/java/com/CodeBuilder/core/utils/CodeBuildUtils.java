@@ -16,22 +16,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 描述：代码生成器
- * Created by Ay on 2017/5/1.
+ * 代码生成工具类
  */
 public class CodeBuildUtils {
 
     private final String AUTHOR = "Ay";
     private final String CURRENT_DATE = "2017/05/03";
-    private final String tableName = "tm_project_quality_problem";
+    //private final String tableName = "client";
     private final String packageName = "com.evada.pm.process.manage";
     private final String tableAnnotation = "质量问题";
-    private final String URL = "jdbc:postgresql://192.168.3.160:10655/cibpm";
-    private final String USER = "postgres";
-    private final String PASSWORD = "888888";
-    private final String DRIVER = "org.postgresql.Driver";
+
+    //数据库相关
+    private final String URL = "jdbc:mysql://127.0.0.1:3306/zwt?characterEncoding=UTF-8";
+    private final String USER = "root";
+    private final String PASSWORD = "eea123654";
+    private final String DRIVER = "com.mysql.jdbc.Driver";
     private final String diskPath = "D://";
-    private final String changeTableName = replaceUnderLineAndUpperCase(tableName);
+    //private final String changeTableName = replaceUnderLineAndUpperCase(tableName);
+
+    private String tableName;
+    private String changeTableName;
 
     public Connection getConnection() throws Exception{
         Class.forName(DRIVER);
@@ -39,10 +43,16 @@ public class CodeBuildUtils {
         return connection;
     }
 
-    public static void main(String[] args) throws Exception{
+    /*public static void main(String[] args) throws Exception{
         CodeBuildUtils codeBuildUtils = new CodeBuildUtils();
         codeBuildUtils.generate();
+    }*/
+
+    public CodeBuildUtils(String tableName){
+        this.tableName=tableName;
+        this.changeTableName = replaceUnderLineAndUpperCase(tableName);
     }
+
 
     public void generate() throws Exception{
         try {
@@ -51,7 +61,7 @@ public class CodeBuildUtils {
             ResultSet resultSet = databaseMetaData.getColumns(null,"%", tableName,"%");
             //生成Mapper文件
             generateMapperFile(resultSet);
-            //生成Dao文件
+            /*//生成Dao文件
             generateDaoFile(resultSet);
             //生成Repository文件
             generateRepositoryFile(resultSet);
@@ -62,7 +72,7 @@ public class CodeBuildUtils {
             //生成Controller层文件
             generateControllerFile(resultSet);
             //生成DTO文件
-            generateDTOFile(resultSet);
+            generateDTOFile(resultSet);*/
             //生成Model文件
             generateModelFile(resultSet);
         } catch (Exception e) {
@@ -81,6 +91,9 @@ public class CodeBuildUtils {
         List<DataColumn> columnClassList = new ArrayList<>();
         DataColumn columnClass = null;
         while(resultSet.next()){
+
+            System.out.println("343434"+resultSet.getString("TYPE_NAME"));
+
             //id字段略过
             if(resultSet.getString("COLUMN_NAME").equals("id")) continue;
             columnClass = new DataColumn();

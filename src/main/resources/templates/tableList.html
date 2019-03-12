@@ -57,14 +57,15 @@
                     <div class="am-u-sm-12 am-u-md-6">
                         <div class="am-btn-toolbar">
                             <div class="am-btn-group am-btn-group-xs">
-                                <button type="button" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 新增</button>
+                                <!--<button type="button" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 新增</button>
                                 <button type="button" class="am-btn am-btn-default am-btn-secondary"><span class="am-icon-save"></span> 保存</button>
                                 <button type="button" class="am-btn am-btn-default am-btn-warning"><span class="am-icon-archive"></span> 审核</button>
-                                <button type="button" class="am-btn am-btn-default am-btn-danger"><span class="am-icon-trash-o"></span> 删除</button>
+                                <button type="button" class="am-btn am-btn-default am-btn-danger"><span class="am-icon-trash-o"></span> 删除</button>-->
+                                <button type="button" class="am-btn am-btn-default am-btn-success"><span class="am-icon-save"></span> 默认配置</button>
                             </div>
                         </div>
                     </div>
-                    <div class="am-u-sm-12 am-u-md-3">
+                    <!--<div class="am-u-sm-12 am-u-md-3">
                         <div class="am-form-group">
                             <select data-am-selected="{btnSize: 'sm'}">
                                 <option value="option1">所有类别</option>
@@ -76,7 +77,7 @@
                                 <option value="option3">超极本</option>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="am-u-sm-12 am-u-md-3">
                         <div class="am-input-group am-input-group-sm">
                             <input type="text" class="am-form-field">
@@ -116,9 +117,13 @@
                                     <td>
                                         <div class="am-btn-toolbar">
                                             <div class="am-btn-group am-btn-group-xs">
-                                                <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button>
+                                                <!--<button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button>
                                                 <button class="am-btn am-btn-default am-btn-xs am-hide-sm-only"><span class="am-icon-copy"></span> 复制</button>
-                                                <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>
+                                                <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>-->
+
+                                                <button class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-pencil-square-o"></span> 配置</button>
+                                                <button class="am-btn am-btn-default am-btn-xs am-text-secondary" @click="build('{{table.tableName}}')"><span class="am-icon-plug"></span> 生成代码</button>
+
                                             </div>
                                         </div>
                                     </td>
@@ -130,16 +135,6 @@
                             <div class="am-cf">
 
                                 <div class="am-fr">
-
-                                    <!--<ul class="am-pagination tpl-pagination">
-                                        <li class="am-disabled"><a href="#">«</a></li>
-                                        <li class="am-active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">5</a></li>
-                                        <li><a href="#">»</a></li>
-                                    </ul>-->
                                     <!--注意：vue中带横杠的class需要加引号-->
                                    <ul class="am-pagination tpl-pagination" >
                                         <li :class="{'am-disabled': !pagination.hasPreviousPage }"><a href="#nowhere"  @click="jump('pre')">«</a></li>
