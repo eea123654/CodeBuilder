@@ -2,9 +2,15 @@ package com.CodeBuilder.core.utils;
 
 import com.CodeBuilder.core.pojo.DataColumn;
 
+import com.CodeBuilder.core.pojo.Setting;
 import freemarker.template.Template;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 
+
+import javax.annotation.Resource;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -18,24 +24,38 @@ import java.util.Map;
 /**
  * 代码生成工具类
  */
+@Autowired() @Qualifier("baseDao")
 public class CodeBuildUtils {
 
-    private final String AUTHOR = "Ay";
-    private final String CURRENT_DATE = "2017/05/03";
+    //private final String AUTHOR = "Ay";
+    //private final String CURRENT_DATE = "2017/05/03";
     //private final String tableName = "client";
-    private final String packageName = "com.evada.pm.process.manage";
-    private final String tableAnnotation = "质量问题";
+    //private final String packageName = "com.evada.pm.process.manage";
+    //private final String tableAnnotation = "质量问题";
 
     //数据库相关
-    private final String URL = "jdbc:mysql://127.0.0.1:3306/zwt?characterEncoding=UTF-8";
-    private final String USER = "root";
-    private final String PASSWORD = "eea123654";
-    private final String DRIVER = "com.mysql.jdbc.Driver";
-    private final String diskPath = "D://";
+
+    @Value("${spring.datasource.url}")
+    private static String URL;
+
+    @Value("${spring.datasource.username}")
+    private static String USER;
+
+    @Value("${spring.datasource.password}")
+    private static String PASSWORD;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private static String DRIVER;
+    //private final String diskPath = "D://";
     //private final String changeTableName = replaceUnderLineAndUpperCase(tableName);
 
     private String tableName;
     private String changeTableName;
+    private String CURRENT_DATE;
+    private String AUTHOR;
+    private String packageName;
+    private String tableAnnotation;
+    private String diskPath;
 
     public Connection getConnection() throws Exception{
         Class.forName(DRIVER);
@@ -48,9 +68,18 @@ public class CodeBuildUtils {
         codeBuildUtils.generate();
     }*/
 
-    public CodeBuildUtils(String tableName){
-        this.tableName=tableName;
+    public CodeBuildUtils(){
+
+    }
+    public CodeBuildUtils(Setting setting){
+        this.tableName=setting.getTableName();
         this.changeTableName = replaceUnderLineAndUpperCase(tableName);
+        this.CURRENT_DATE = setting.getCreateDate();
+        this.AUTHOR=setting.getAuthor();
+        this.packageName=setting.getPackageName();
+        this.tableAnnotation=setting.getTableAnnotation();
+        this.diskPath=setting.getFilePath();
+        System.out.println("===================="+URL);
     }
 
 
@@ -60,7 +89,7 @@ public class CodeBuildUtils {
             DatabaseMetaData databaseMetaData = connection.getMetaData();
             ResultSet resultSet = databaseMetaData.getColumns(null,"%", tableName,"%");
             //生成Mapper文件
-            generateMapperFile(resultSet);
+            //generateMapperFile(resultSet);
             /*//生成Dao文件
             generateDaoFile(resultSet);
             //生成Repository文件
@@ -91,8 +120,6 @@ public class CodeBuildUtils {
         List<DataColumn> columnClassList = new ArrayList<>();
         DataColumn columnClass = null;
         while(resultSet.next()){
-
-            System.out.println("343434"+resultSet.getString("TYPE_NAME"));
 
             //id字段略过
             if(resultSet.getString("COLUMN_NAME").equals("id")) continue;

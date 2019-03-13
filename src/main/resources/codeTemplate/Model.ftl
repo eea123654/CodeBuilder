@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
-* 描述：${table_annotation}模型
+* 描述：${table_annotation}实体类
 * @author ${author}
 * @date ${date}
 */

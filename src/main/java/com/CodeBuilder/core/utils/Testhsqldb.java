@@ -12,9 +12,7 @@ public class Testhsqldb {
         Class.forName("org.hsqldb.jdbcDriver");
 
         String url = "jdbc:hsqldb:file:d:/hsqldb/test;shutdown=true";
-        System.out.println(0);
         Connection c =DriverManager.getConnection(url, "root", "admin");
-        System.out.println("1");
         Statement st = c.createStatement();
 
         /*String sql = "CREATE TABLE category (" +
@@ -27,17 +25,19 @@ public class Testhsqldb {
         String sql2 = "insert into category values (null,'category1')";
         st.execute(sql2);*/
 
-        System.out.println("2");
-        ResultSet rs= st.executeQuery("select * from category");
+        /*String sql3 = " drop table category";
+        st.execute(sql3);
+        String sql4 = " drop table setting";
+        st.execute(sql4);*/
+
+        ResultSet rs= st.executeQuery("select * from setting where is_default = '1' ");
         while(rs.next()){
             int id = rs.getInt("id");
-            String name = rs.getString("name");
+            String name = rs.getString("author");
             System.out.println(id+"\t"+name);
         }
-        System.out.println("3");
         st.close();
         c.close();
-        System.out.println("4");
 
     }
 }

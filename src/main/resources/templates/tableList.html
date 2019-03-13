@@ -20,6 +20,8 @@
     <script th:src="@{/static/js/jquery.min.js}"></script>
     <script th:src="@{/static/js/vue.min.js}"></script>
     <script th:src="@{/static/js/axios.min.js}"></script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 
 <body data-type="index">
@@ -89,7 +91,7 @@
                 </div>
                 <div class="am-g">
                     <div class="am-u-sm-12">
-                        <form class="am-form" id="app">
+                        <form class="am-form" id="app" onsubmit='return false'>
                             <table class="am-table am-table-striped am-table-hover table-main">
                                 <thead>
                                 <tr>
@@ -122,7 +124,7 @@
                                                 <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>-->
 
                                                 <button class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-pencil-square-o"></span> 配置</button>
-                                                <button class="am-btn am-btn-default am-btn-xs am-text-secondary" @click="build('{{table.tableName}}')"><span class="am-icon-plug"></span> 生成代码</button>
+                                                <button class="am-btn am-btn-default am-btn-xs am-text-secondary" @click="build(table.tableName)"><span class="am-icon-plug"></span> 生成代码</button>
 
                                             </div>
                                         </div>
@@ -165,6 +167,16 @@
                                     this.list(1);
                                 },
                                 methods: {
+                                    build: function (tableName) {
+                                        var url = "build?tableName="+tableName;
+                                        axios.get(url).then(function(response) {
+                                            if(response.data.status=='success'){
+                                                swal('生成成功','','success');
+                                            }else{
+                                                swal('生成失败','','error');
+                                            }
+                                        })
+                                    },
                                     list:function(start){
                                         var url = "tables?start="+start;
                                         axios.get(url).then(function(response) {
@@ -224,8 +236,8 @@
 
 
 <script th:src="@{/static/js/amazeui.min.js}"></script>
-<script th:src="@{/static/js/iscroll.js}"></script>
-<script th:src="@{/static/js/app.js}"></script>
+<!--<script th:src="@{/static/js/iscroll.js}"></script>-->
+<!--<script th:src="@{/static/js/app.js}"></script>-->
 </body>
 
 </html>
