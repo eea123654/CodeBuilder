@@ -5,9 +5,7 @@ import com.CodeBuilder.core.pojo.DataColumn;
 import com.CodeBuilder.core.pojo.Setting;
 import freemarker.template.Template;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
+
 
 
 import javax.annotation.Resource;
@@ -24,7 +22,7 @@ import java.util.Map;
 /**
  * 代码生成工具类
  */
-@Autowired() @Qualifier("baseDao")
+
 public class CodeBuildUtils {
 
     //private final String AUTHOR = "Ay";
@@ -35,7 +33,7 @@ public class CodeBuildUtils {
 
     //数据库相关
 
-    @Value("${spring.datasource.url}")
+    /*@Value("${spring.datasource.url}")
     private static String URL;
 
     @Value("${spring.datasource.username}")
@@ -45,7 +43,13 @@ public class CodeBuildUtils {
     private static String PASSWORD;
 
     @Value("${spring.datasource.driver-class-name}")
-    private static String DRIVER;
+    private static String DRIVER;*/
+
+    private  String URL="jdbc:mysql://127.0.0.1:3306/zwt?characterEncoding=UTF-8";
+    private  String USER="root";
+    private  String PASSWORD="eea123654";
+    private  String DRIVER="com.mysql.jdbc.Driver";
+
     //private final String diskPath = "D://";
     //private final String changeTableName = replaceUnderLineAndUpperCase(tableName);
 
