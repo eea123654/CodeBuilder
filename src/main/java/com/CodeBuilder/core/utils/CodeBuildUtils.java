@@ -5,19 +5,16 @@ import com.CodeBuilder.core.pojo.DataColumn;
 import com.CodeBuilder.core.pojo.Setting;
 import freemarker.template.Template;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 
-
-import javax.annotation.Resource;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 代码生成工具类
@@ -25,33 +22,11 @@ import java.util.Map;
 
 public class CodeBuildUtils {
 
-    //private final String AUTHOR = "Ay";
-    //private final String CURRENT_DATE = "2017/05/03";
-    //private final String tableName = "client";
-    //private final String packageName = "com.evada.pm.process.manage";
-    //private final String tableAnnotation = "质量问题";
-
     //数据库相关
-
-    /*@Value("${spring.datasource.url}")
     private static String URL;
-
-    @Value("${spring.datasource.username}")
     private static String USER;
-
-    @Value("${spring.datasource.password}")
     private static String PASSWORD;
-
-    @Value("${spring.datasource.driver-class-name}")
-    private static String DRIVER;*/
-
-    private  String URL="jdbc:mysql://127.0.0.1:3306/zwt?characterEncoding=UTF-8";
-    private  String USER="root";
-    private  String PASSWORD="eea123654";
-    private  String DRIVER="com.mysql.jdbc.Driver";
-
-    //private final String diskPath = "D://";
-    //private final String changeTableName = replaceUnderLineAndUpperCase(tableName);
+    private static String DRIVER;
 
     private String tableName;
     private String changeTableName;
@@ -61,21 +36,38 @@ public class CodeBuildUtils {
     private String tableAnnotation;
     private String diskPath;
 
+    //hy:因为某些原因无法自动注入参数，所以用这种方法
+    static {
+        try {
+            dbconfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public Connection getConnection() throws Exception{
         Class.forName(DRIVER);
         Connection connection= DriverManager.getConnection(URL, USER, PASSWORD);
         return connection;
     }
 
-    /*public static void main(String[] args) throws Exception{
-        CodeBuildUtils codeBuildUtils = new CodeBuildUtils();
-        codeBuildUtils.generate();
-    }*/
 
-    public CodeBuildUtils(){
+    private static void dbconfig() throws Exception{
 
+        Properties pro=new Properties();
+        Resource resource = new ClassPathResource("application.properties");
+        File sourceFile =  resource.getFile();
+        InputStream in =new FileInputStream(sourceFile);
+        pro.load(in);
+        URL=pro.getProperty("spring.datasource.url");
+        USER=pro.getProperty("spring.datasource.username");
+        PASSWORD=pro.getProperty("spring.datasource.password");
+        DRIVER=pro.getProperty("spring.datasource.driver-class-name");
     }
+
+
     public CodeBuildUtils(Setting setting){
+
         this.tableName=setting.getTableName();
         this.changeTableName = replaceUnderLineAndUpperCase(tableName);
         this.CURRENT_DATE = setting.getCreateDate();
@@ -83,7 +75,6 @@ public class CodeBuildUtils {
         this.packageName=setting.getPackageName();
         this.tableAnnotation=setting.getTableAnnotation();
         this.diskPath=setting.getFilePath();
-        System.out.println("===================="+URL);
     }
 
 

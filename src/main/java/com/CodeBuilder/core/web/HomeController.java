@@ -19,9 +19,7 @@ public class HomeController {
 
     @RequestMapping("/home")
     public String home(Model m) {
-        List<Client> cs=clientMapper.findAll();
-        m.addAttribute("cs",cs);
-        //m.addAttribute("name", "thymeleaf");
+        m.addAttribute("url", "home");
         return "home";
     }
 

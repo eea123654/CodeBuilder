@@ -1,17 +1,17 @@
 <div class="tpl-left-nav tpl-left-nav-hover">
     <div class="tpl-left-nav-title">
-        功能列表
+        功能列表<div></div>
     </div>
     <div class="tpl-left-nav-list">
         <ul class="tpl-left-nav-menu">
             <li class="tpl-left-nav-item">
-                <a href="home" class="nav-link active">
+                <a href="home" class="nav-link"  th:class="${url=='home'}? 'nav-link active' : 'nav-link'" >
                     <i class="am-icon-home"></i>
                     <span>首页</span>
                 </a>
             </li>
             <li class="tpl-left-nav-item">
-                <a href="tableList" class="nav-link " >
+                <a href="tableList" class="nav-link"  th:class="${url=='tableList'}? 'nav-link active' : 'nav-link'"  >
                     <i class="am-icon-database"></i>
                     <span>数据表</span>
                     <!--<i class="tpl-left-nav-content tpl-badge-danger">
@@ -21,7 +21,7 @@
             </li>
 
             <li class="tpl-left-nav-item">
-                <a href="defaultSetting" class="nav-link " >
+                <a href="defaultSetting" class="nav-link"  th:class="${url=='defaultSetting'}? 'nav-link active' : 'nav-link'" >
                     <i class="am-icon-gear"></i>
                     <span>系统设置</span>
                 </a>

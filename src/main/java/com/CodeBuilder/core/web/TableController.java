@@ -51,6 +51,7 @@ public class TableController {
     @RequestMapping(value="/tableList", method=RequestMethod.GET)
     public ModelAndView tableList() {
         ModelAndView mv = new ModelAndView("tableList");
+        mv.addObject("url", "tableList");
         return mv;
     }
 

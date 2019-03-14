@@ -119,6 +119,7 @@ public class SettingUtils {
                 setting.setAuthor(rs.getString("author"));
                 setting.setTableAnnotation(rs.getString("table_annotation"));
                 setting.setFilePath(rs.getString("file_path"));
+                setting.setIsDefault(rs.getString("is_default"));
             }
 
         } catch (SQLException e) {
@@ -161,6 +162,30 @@ public class SettingUtils {
             DbUtils.colseResource(conn, st, rs);
         }
         return setting;
+    }
+
+
+    public void updateDefaultSetting(Setting setting){
+
+            Connection conn = null;
+            PreparedStatement st = null;
+            ResultSet rs = null;
+
+            try {
+                conn = DbUtils.getConnection();
+                String sql = "update setting set package_name=?,create_date=?,author=?,file_path=? where  is_default = '1' ";
+                st= conn.prepareStatement(sql);
+                st.setString(1, setting.getPackageName());
+                st.setString(2, setting.getCreateDate());
+                st.setString(3, setting.getAuthor());
+                st.setString(4, setting.getFilePath());
+                int result = st.executeUpdate();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }finally {
+                DbUtils.colseResource(conn, st, rs);
+            }
     }
 
 
