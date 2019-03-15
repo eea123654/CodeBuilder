@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>系统设置-代码生成器</title>
+    <title>数据表配置-代码生成器</title>
     <meta name="description" content="这是一个开始……">
     <meta name="keywords" content="index">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,30 +24,11 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 
-<body data-type="index">
+<body data-type="index" style="background-color: #fff;">
 
-
-<header  th:replace="public/head"></header>
-
-
-
-<div class="tpl-page-container tpl-page-header-fixed">
-
-
-    <div th:replace="public/leftnav"></div>
-
-
-    <div class="tpl-content-wrapper">
 
         <div class="tpl-portlet-components">
-            <div class="portlet-title">
-                <div class="caption font-green bold">
-                    <span class="am-icon-code"></span> 系统设置
-                </div>
 
-
-
-            </div>
             <div class="tpl-block ">
 
                 <div class="am-g tpl-amazeui-form">
@@ -55,6 +36,19 @@
 
                     <div class="am-u-sm-12 am-u-md-9">
                         <form class="am-form am-form-horizontal"  id="app" onsubmit='return false'>
+
+                            <div class="am-form-group">
+                                <label for="user-name" class="am-u-sm-3 am-form-label">是否开启</label>
+                                <div class="am-u-sm-9">
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="radio10"  v-model="setting.isOpen" value="1"  data-am-ucheck> <div style="height: 8px;line-height: 3px;">是</div>
+                                    </label>
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="radio10" v-model="setting.isOpen" value="0"  data-am-ucheck><div style="height: 8px;line-height: 3px;">否</div>
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="am-form-group">
                                 <label for="user-name" class="am-u-sm-3 am-form-label">包名</label>
                                 <div class="am-u-sm-9">
@@ -88,13 +82,13 @@
                                 </div>
                             </div>
 
-                            <!--<div class="am-form-group">
+                            <div class="am-form-group">
                                 <label for="user-intro" class="am-u-sm-3 am-form-label">数据表简介</label>
                                 <div class="am-u-sm-9">
-                                    <textarea class="" rows="5" id="user-intro" placeholder="输入数据表简介"></textarea>
+                                    <textarea class="" rows="5" id="user-intro" v-model="setting.tableAnnotation" placeholder="输入数据表简介"></textarea>
                                     <small>没有可不填</small>
                                 </div>
-                            </div>-->
+                            </div>
 
                             <div class="am-form-group">
                                 <div class="am-u-sm-9 am-u-sm-push-3">
@@ -110,47 +104,54 @@
 
 
 
-    </div>
 
-</div>
-<script type="text/javascript">
 
-    var defaultSetting = {setting:{
-        packageName: '',
-        createDate:'',
-        author:'',
-        filePath:'',
-        isDefault:''
-    }};
+
+<script type="text/javascript"  th:inline="javascript">
+
+    var tableSetting = {setting:{
+            id: 0,
+            dbname: '',
+            tableName: [[${tableName}]],
+            packageName: '',
+            createDate:'',
+            author:'',
+            tableAnnotation:'',
+            filePath:'',
+            isOpen:'1',
+            isDefault:'0'
+        }};
 
     //ViewModel
     var vue = new Vue({
         el: '#app',
-        data: defaultSetting,
+        data: tableSetting,
         mounted:function(){
-            this.get("hyDefault");
+            this.get([[${tableName}]]);
         },
         methods: {
             get:function(tableName){
-                var url = "setting/"+tableName;
+                var url = "../setting/"+tableName;
                 axios.get(url).then(function(response) {
                     console.log(response);
-                    vue.setting = response.data;
+                    if(response.data.id!=0){
+                        vue.setting = response.data;
+                    }
                 })
             },
             update:function (event) {
-                var url = "setting";
+                var url = "../setting";
                 axios.put(url,vue.setting).then(function(response){
                     if(response.data=='success'){
-                        swal('保存成功','','success').then((value) => {vue.get("hyDefault")});
+                        swal('保存成功','','success').then((value) => {parent.popup.close();});
                         ;
                     }else{
-                        swal('保存失败','','error').then((value) => {vue.get("hyDefault")});
+                        swal('保存失败','','error').then((value) => {parent.popup.close();});
                     }
                 });
             },
             cancel:function(){
-                location.href="defaultSetting";
+                location.href="tableSetting/"+vue.setting.tableName;
             }
         }
     });
@@ -161,7 +162,7 @@
 
 <script th:src="@{/static/js/amazeui.min.js}"></script>
 <!--<script th:src="@{/static/js/iscroll.js}"></script>-->
-<script th:src="@{/static/js/app.js}"></script>
+<!--<script th:src="@{/static/js/app.js}"></script>-->
 </body>
 
 </html>

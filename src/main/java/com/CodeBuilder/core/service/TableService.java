@@ -25,9 +25,14 @@ public class TableService {
         SettingUtils settingUtils = new SettingUtils();
         //查询数据表配置信息
         Setting setting = settingUtils.getTableSetting(tableName);
-        if (0==setting.getId()){
-            setting = settingUtils.getDefaultSetting();
+        if(0==setting.getId()){
+            setting=settingUtils.getDefaultSetting();
+        }else{
+            if("0".equals(setting.getIsOpen())){
+                setting=settingUtils.getDefaultSetting();
+            }
         }
+
         setting.setTableName(tableName);
         //生成代码
         CodeBuildUtils build = new CodeBuildUtils(setting);

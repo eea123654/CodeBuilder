@@ -114,11 +114,15 @@ public class SettingUtils {
             st= conn.prepareStatement(sql);
             rs = st.executeQuery();
             while (rs.next()) {
+                setting.setId(rs.getInt("id"));
+                setting.setDbname(rs.getString("dbname"));
                 setting.setPackageName(rs.getString("package_name"));
                 setting.setCreateDate(rs.getString("create_date"));
                 setting.setAuthor(rs.getString("author"));
                 setting.setTableAnnotation(rs.getString("table_annotation"));
                 setting.setFilePath(rs.getString("file_path"));
+                setting.setIsDefault(rs.getString("is_default"));
+                setting.setIsOpen(rs.getString("is_open"));
                 setting.setIsDefault(rs.getString("is_default"));
             }
 
@@ -139,7 +143,7 @@ public class SettingUtils {
 
         try {
             conn = DbUtils.getConnection();
-            String sql = "select * from setting where table_name = ? and is_open = '1' ";
+            String sql = "select * from setting where table_name = ? ";
             st= conn.prepareStatement(sql);
             st.setString(1, tableName);
             rs = st.executeQuery();
@@ -153,6 +157,8 @@ public class SettingUtils {
                     setting.setAuthor(rs.getString("author"));
                     setting.setTableAnnotation(rs.getString("table_annotation"));
                     setting.setFilePath(rs.getString("file_path"));
+                    setting.setIsOpen(rs.getString("is_open"));
+                    setting.setIsDefault(rs.getString("is_default"));
                 }
             }
 
@@ -188,6 +194,62 @@ public class SettingUtils {
             }
     }
 
+    public void updateTableSetting(Setting setting){
+
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DbUtils.getConnection();
+            String sql = "update setting set package_name=?,create_date=?,author=?,table_annotation=?,file_path=?,is_open=? where  id = ? ";
+            st= conn.prepareStatement(sql);
+            st.setString(1, setting.getPackageName());
+            st.setString(2, setting.getCreateDate());
+            st.setString(3, setting.getAuthor());
+            st.setString(4, setting.getTableAnnotation());
+            st.setString(5, setting.getFilePath());
+            st.setString(6, setting.getIsOpen());
+            st.setInt(7, setting.getId());
+            int result = st.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DbUtils.colseResource(conn, st, rs);
+        }
+    }
+
+    public void insertTableSetting(Setting setting){
+
+        System.out.println(setting.getTableName());
+
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DbUtils.getConnection();
+            String sql = "insert into setting values(null,?,?,?,?,?,?,?,?,?)";
+
+            st= conn.prepareStatement(sql);
+            st.setString(1, "");
+            st.setString(2, setting.getTableName());
+            st.setString(3, setting.getPackageName());
+            st.setString(4, setting.getCreateDate());
+            st.setString(5, setting.getAuthor());
+            st.setString(6, setting.getTableAnnotation());
+            st.setString(7, setting.getFilePath());
+            st.setString(8, setting.getIsOpen());
+            st.setString(9, "0");
+            int result = st.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DbUtils.colseResource(conn, st, rs);
+        }
+    }
 
     public void add() {
         Connection conn = null;

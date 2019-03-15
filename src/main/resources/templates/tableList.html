@@ -54,7 +54,7 @@
                                 <button type="button" class="am-btn am-btn-default am-btn-secondary"><span class="am-icon-save"></span> 保存</button>
                                 <button type="button" class="am-btn am-btn-default am-btn-warning"><span class="am-icon-archive"></span> 审核</button>
                                 <button type="button" class="am-btn am-btn-default am-btn-danger"><span class="am-icon-trash-o"></span> 删除</button>-->
-                                <button type="button" class="am-btn am-btn-default am-btn-success"><span class="am-icon-save"></span> 默认配置</button>
+                                <a  class="am-btn am-btn-default am-btn-success" href="defaultSetting"><span class="am-icon-save"></span> 默认配置</a>
                             </div>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                                     <td>
                                         <div class="am-btn-toolbar">
                                             <div class="am-btn-group am-btn-group-xs">
-                                                <button class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-pencil-square-o"></span> 配置</button>
+                                                <button class="am-btn am-btn-default am-btn-xs am-text-danger" @click="setting(table.tableName)" ><span class="am-icon-pencil-square-o"></span> 配置</button>
                                                 <button class="am-btn am-btn-default am-btn-xs am-text-secondary" @click="build(table.tableName)"><span class="am-icon-plug"></span> 生成代码</button>
 
                                             </div>
@@ -127,73 +127,6 @@
 
                         </form>
 
-                        <script type="text/javascript">
-                            var data4Vue = {
-                                tables: [],
-                                table4Add: { id: 0, name: '', hp: '0'},
-                                pagination:{}
-                            };
-
-                            //ViewModel
-                            var vue = new Vue({
-                                el: '#app',
-                                data: data4Vue,
-                                mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
-                                    this.list(1);
-                                },
-                                methods: {
-                                    build: function (tableName) {
-                                        var url = "build?tableName="+tableName;
-                                        axios.get(url).then(function(response) {
-                                            if(response.data.status=='success'){
-                                                swal('生成成功','','success');
-                                            }else{
-                                                swal('生成失败','','error');
-                                            }
-                                        })
-                                    },
-                                    list:function(start){
-                                        var url = "tables?start="+start;
-                                        axios.get(url).then(function(response) {
-                                            vue.pagination = response.data;
-                                            console.log(vue.pagination);
-                                            vue.tables = response.data.list;
-                                        })
-                                    },
-                                    add: function (event) {
-                                        var url = "tables";
-
-                                        axios.post(url,this.hero4Add).then(function(response){
-                                            vue.list(1);
-                                            vue.hero4Add = { id: 0, name: '', hp: '0'}
-                                        });
-                                    },
-                                    deleteHero: function (id) {
-                                        var url = "tables/"+id;
-                                        axios.delete(url).then(function(response){
-                                            vue.list(1);
-                                        });
-                                    },
-                                    jump: function(page){
-                                        if('first'== page && 1!=vue.pagination.pageNum)
-                                            vue.list(1);
-                                        else if('pre'== page && vue.pagination.hasPreviousPage )
-                                            vue.list(vue.pagination.prePage);
-                                        else if('next'== page && vue.pagination.hasNextPage)
-                                            vue.list(vue.pagination.nextPage);
-                                        else if('last'== page && vue.pagination.pageNum!=vue.pagination.pages)
-                                            vue.list(vue.pagination.pages);
-                                    },
-                                    jumpByNumber: function(start){
-                                        if(start!=vue.pagination.pageNum)
-                                            vue.list(start);
-                                    }
-                                }
-                            });
-                        </script>
-
-
-
 
                     </div>
 
@@ -209,10 +142,110 @@
 </div>
 
 
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="popup">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">{{title}}
+            <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+        </div>
+        <div class="am-modal-bd">
+            <iframe width="100%" height="550px"  :src="tableSettingUrl" ></iframe>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var data4Vue = {
+        tables: [],
+        table4Add: { id: 0, name: '', hp: '0'},
+        pagination:{}
+    };
+
+    //ViewModel
+    var vue = new Vue({
+        el: '#app',
+        data: data4Vue,
+        mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
+            this.list(1);
+        },
+        methods: {
+            build: function (tableName) {
+                var url = "build?tableName="+tableName;
+                axios.get(url).then(function(response) {
+                    if(response.data.status=='success'){
+                        swal('生成成功','','success');
+                    }else{
+                        swal('生成失败','','error');
+                    }
+                })
+            },
+            setting: function (tableName) {
+                popup.open(tableName);
+            },
+            list:function(start){
+                var url = "tables?start="+start;
+                axios.get(url).then(function(response) {
+                    vue.pagination = response.data;
+                    console.log(vue.pagination);
+                    vue.tables = response.data.list;
+                })
+            },
+
+            jump: function(page){
+                if('first'== page && 1!=vue.pagination.pageNum)
+                    vue.list(1);
+                else if('pre'== page && vue.pagination.hasPreviousPage )
+                    vue.list(vue.pagination.prePage);
+                else if('next'== page && vue.pagination.hasNextPage)
+                    vue.list(vue.pagination.nextPage);
+                else if('last'== page && vue.pagination.pageNum!=vue.pagination.pages)
+                    vue.list(vue.pagination.pages);
+            },
+            jumpByNumber: function(start){
+                if(start!=vue.pagination.pageNum)
+                    vue.list(start);
+            }
+        }
+    });
+
+    //弹窗的实例
+    var popup = new Vue({
+        el: '#popup',
+        data: {
+            title:'',
+            tableSettingUrl:''
+        },
+        methods: {
+            get:function(tableName){
+                var url = "setting/"+tableName;
+                axios.get(url).then(function(response) {
+                    console.log(response);
+                    vue.setting = response.data;
+                })
+            },
+            open: function (tableName) {
+                this.title=tableName+"表配置";
+                this.tableSettingUrl="tableSetting/"+tableName;
+                var $modal = $('#popup');
+                $modal.modal({width: 1000, height: 625});
+            },
+            close: function () {
+                var $modal = $('#popup');
+                $modal.modal('close');
+            }
+        }
+    });
+
+
+
+
+</script>
+
+
 
 <script th:src="@{/static/js/amazeui.min.js}"></script>
 <!--<script th:src="@{/static/js/iscroll.js}"></script>-->
-<!--<script th:src="@{/static/js/app.js}"></script>-->
+<script th:src="@{/static/js/app.js}"></script>
 </body>
 
 </html>

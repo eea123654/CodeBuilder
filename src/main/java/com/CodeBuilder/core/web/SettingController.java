@@ -29,13 +29,20 @@ public class SettingController {
         return mv;
     }
 
+    @RequestMapping(value="/tableSetting/{tableName}", method=RequestMethod.GET)
+    public ModelAndView tableSetting(@PathVariable("tableName") String tableName) {
+        ModelAndView mv = new ModelAndView("tableSetting");
+        mv.addObject("tableName", tableName);
+        return mv;
+    }
+
     /*restful 部分*/
     @GetMapping("/setting/{tableName}")
     public Setting getSetting(@PathVariable("tableName") String tableName) {
 
         SettingUtils su = new SettingUtils();
         Setting setting = new Setting();
-        if(tableName.equals("hyDefault")){
+        if("hyDefault".equals(tableName)){
             setting = su.getDefaultSetting();
         }else{
             setting = su.getTableSetting(tableName);
@@ -46,8 +53,16 @@ public class SettingController {
     @PutMapping("/setting")
     public String update(@RequestBody Setting setting) throws Exception {
         SettingUtils su = new SettingUtils();
-        if(setting.getIsDefault().equals("1")){
+
+        if("1".equals(setting.getIsDefault())){
             su.updateDefaultSetting(setting);
+        }else{
+            if(setting.getId()!=0){
+                su.updateTableSetting(setting);
+            }else{
+
+                su.insertTableSetting(setting);
+            }
         }
         return "success";
     }
