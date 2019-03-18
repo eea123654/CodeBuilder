@@ -14,10 +14,10 @@
 		a.table_collation AS "tableCollation"
 	</sql>
 
-    <select id="findList" resultType="Table">
+    <select id="findList" parameterType="String" resultType="Table">
         select
             <include refid="tableColumns"/>
         from information_schema.tables a
-        where a.table_schema='zwt' and a.table_type='base table'
+        where a.table_schema=#{dbname}  and a.table_type='base table'
     </select>
 </mapper>

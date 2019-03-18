@@ -63,8 +63,11 @@ public class CodeBuildUtils {
         USER=pro.getProperty("spring.datasource.username");
         PASSWORD=pro.getProperty("spring.datasource.password");
         DRIVER=pro.getProperty("spring.datasource.driver-class-name");
+        
     }
 
+
+    
 
     public CodeBuildUtils(Setting setting){
 
@@ -84,7 +87,7 @@ public class CodeBuildUtils {
             DatabaseMetaData databaseMetaData = connection.getMetaData();
             ResultSet resultSet = databaseMetaData.getColumns(null,"%", tableName,"%");
             //生成Mapper文件
-            generateMapperFile(resultSet);
+            //generateMapperFile(resultSet);
             /*//生成Dao文件
             generateDaoFile(resultSet);
             //生成Repository文件

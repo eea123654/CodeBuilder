@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface TableMapper {
-    List<Table> findList();
+    List<Table> findList(String dbname);
 }

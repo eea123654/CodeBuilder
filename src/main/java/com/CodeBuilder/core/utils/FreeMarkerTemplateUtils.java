@@ -9,7 +9,7 @@ import freemarker.template.TemplateExceptionHandler;
 import java.io.IOException;
 
 /**
- * Created by Ay on 2016/7/27.
+ * Freemarker相关
  */
 public class FreeMarkerTemplateUtils {
 
@@ -17,7 +17,7 @@ public class FreeMarkerTemplateUtils {
     private static final Configuration CONFIGURATION = new Configuration(Configuration.VERSION_2_3_22);
 
     static{
-        //这里比较重要，用来指定加载模板所在的路径
+        //这里用来指定加载模板所在的路径
         CONFIGURATION.setTemplateLoader(new ClassTemplateLoader(FreeMarkerTemplateUtils.class, "/codeTemplate"));
         CONFIGURATION.setDefaultEncoding("UTF-8");
         CONFIGURATION.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
