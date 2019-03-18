@@ -1,44 +1,42 @@
-package ${package_name}.model;
-import com.evada.inno.common.domain.BaseModel;
-import com.evada.inno.common.listener.ICreateListenable;
-import com.evada.inno.common.listener.IDeleteListenable;
-import com.evada.inno.common.listener.IModifyListenable;
-import org.hibernate.annotations.Where;
-import javax.persistence.*;
-import java.util.Date;
+package com.jeeplus.modules.${package_name}.entity;
+
+import com.jeeplus.core.persistence.DataEntity;
+import com.jeeplus.common.utils.excel.annotation.ExcelField;
 
 /**
 * 描述：${table_annotation}实体类
 * @author ${author}
 * @date ${date}
 */
-@Entity
-@Table(name="${table_name_small}")
-@Where(clause = "status > '0'")
-@Inheritance(strategy= InheritanceType.SINGLE_TABLE)
-public class ${table_name} extends BaseModel implements ICreateListenable,IModifyListenable,IDeleteListenable {
+
+
+public class ${table_name} extends DataEntity<${table_name}>  {
+
+    private static final long serialVersionUID = 1L;
 
 <#if model_column?exists>
     <#list model_column as model>
-    /**
-    *${model.columnComment!}
-    */
         <#if (model.columnType = 'VARCHAR' || model.columnType = 'TEXT')>
-    @Column(name = "${model.columnName}",columnDefinition = "VARCHAR")
-    private String ${model.changeColumnName?uncap_first};
-
+    private String ${model.changeColumnName?uncap_first};  //${model.columnComment!}
         </#if>
-        <#if model.columnType = 'TIMESTAMP' >
-    @Column(name = "${model.columnName}",columnDefinition = "TIMESTAMP")
-    private Date ${model.changeColumnName?uncap_first};
-
+        <#if model.columnType = 'TIMESTAMP' || model.columnType = 'DATETIME' >
+    private Date ${model.changeColumnName?uncap_first};  //${model.columnComment!}
         </#if>
     </#list>
 </#if>
 
+    public ${table_name}(){
+        super();
+    }
+
+    public ${table_name}(String id){
+        super(id);
+    }
+
 <#if model_column?exists>
     <#list model_column as model>
         <#if (model.columnType = 'VARCHAR' || model.columnType = 'TEXT')>
+    @ExcelField(title="${model.changeColumnName?uncap_first}", align=2, sort=${model_index+1})
     public String get${model.changeColumnName}() {
         return this.${model.changeColumnName?uncap_first};
     }
@@ -48,7 +46,8 @@ public class ${table_name} extends BaseModel implements ICreateListenable,IModif
     }
 
         </#if>
-        <#if model.columnType = 'TIMESTAMP' >
+        <#if model.columnType = 'TIMESTAMP' || model.columnType = 'DATETIME'  >
+    @ExcelField(title="${model.changeColumnName?uncap_first}", align=2, sort=${model_index+1})
     public Date get${model.changeColumnName}() {
         return this.${model.changeColumnName?uncap_first};
     }
