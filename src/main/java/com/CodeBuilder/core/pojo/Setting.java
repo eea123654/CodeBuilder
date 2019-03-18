@@ -14,6 +14,10 @@ public class Setting {
     private String author;
 
     private String tableAnnotation;
+    
+    private String moduleName;
+    
+    private String submoduleName;
 
     private String filePath;
 
@@ -77,7 +81,24 @@ public class Setting {
         this.tableAnnotation = tableAnnotation;
     }
 
-    public String getFilePath() {
+    
+    public String getModuleName() {
+		return moduleName;
+	}
+
+	public void setModuleName(String moduleName) {
+		this.moduleName = moduleName;
+	}
+
+	public String getSubmoduleName() {
+		return submoduleName;
+	}
+
+	public void setSubmoduleName(String submoduleName) {
+		this.submoduleName = submoduleName;
+	}
+
+	public String getFilePath() {
         return filePath;
     }
 

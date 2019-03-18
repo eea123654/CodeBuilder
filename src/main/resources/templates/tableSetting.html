@@ -82,6 +82,22 @@
                                 </div>
                             </div>
 
+							<div class="am-form-group">
+                                <label for="user-moduleName" class="am-u-sm-3 am-form-label">模块名称</label>
+                                <div class="am-u-sm-9">
+                                    <input type="text" id="user-moduleName" v-model="setting.moduleName" placeholder="输入模块名称">
+                                    <small>可理解为子系统名，例如sys</small>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label for="user-submoduleName" class="am-u-sm-3 am-form-label">子模块名称</label>
+                                <div class="am-u-sm-9">
+                                    <input type="text" id="user-submoduleName" v-model="setting.submoduleName" placeholder="输入子模块名称">
+                                    <small>可对模块分层，没有可不填</small>
+                                </div>
+                            </div>
+
                             <div class="am-form-group">
                                 <label for="user-intro" class="am-u-sm-3 am-form-label">数据表简介</label>
                                 <div class="am-u-sm-9">
@@ -117,6 +133,8 @@
             createDate:'',
             author:'',
             tableAnnotation:'',
+            moduleName:'',
+            submoduleName:'',
             filePath:'',
             isOpen:'1',
             isDefault:'0'

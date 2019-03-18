@@ -63,6 +63,8 @@ public class SettingUtils {
                     "  create_date varchar(255) DEFAULT NULL," +
                     "  author varchar(255) DEFAULT NULL," +
                     "  table_annotation varchar(255) DEFAULT NULL," +  //表简介
+                    "  module_name varchar(255) DEFAULT NULL," +  //模块名
+                    "  submodule_name varchar(255) DEFAULT NULL," +  //子模块名
                     "  file_path varchar(255) DEFAULT NULL," +  //文件生成路径
                     "  is_open varchar(5) DEFAULT NULL," +  //是否开启，0未开启，1已开启
                     "  is_default varchar(5) DEFAULT NULL," +  //是否默认设置，1为默认
@@ -72,18 +74,21 @@ public class SettingUtils {
             st.executeUpdate();
 
             //插入默认数据
-            String insertsql = "insert into setting values(null,null,null,?,?,?,?,?,?,?)";
+            String insertsql = "insert into setting values(null,null,null,?,?,?,?,?,?,?,?,?)";
             st= conn.prepareStatement(insertsql);
-            st.setString(1, "com.CodeBuilder"); //package_name
+            st.setString(1, "com.jeeplus"); //package_name
             SimpleDateFormat sdf =new SimpleDateFormat("yyyy/MM/dd" );
             Date d= new Date();
             String create_date = sdf.format(d);
             st.setString(2, create_date);
             st.setString(3, "CodeBuilder");
             st.setString(4, "");
-            st.setString(5, "D://");
-            st.setString(6, "1");
-            st.setString(7, "1");
+            st.setString(5, "test");//初始模块名。默认为test
+            st.setString(6, "");	//初始子模块名。默认为空
+            
+            st.setString(7, "D://");
+            st.setString(8, "1");
+            st.setString(9, "1");
             int result = st.executeUpdate();
 
             if(result!=1){
@@ -120,6 +125,8 @@ public class SettingUtils {
                 setting.setCreateDate(rs.getString("create_date"));
                 setting.setAuthor(rs.getString("author"));
                 setting.setTableAnnotation(rs.getString("table_annotation"));
+                setting.setModuleName(rs.getString("module_name"));
+                setting.setSubmoduleName(rs.getString("submodule_name"));
                 setting.setFilePath(rs.getString("file_path"));
                 setting.setIsDefault(rs.getString("is_default"));
                 setting.setIsOpen(rs.getString("is_open"));
@@ -156,6 +163,8 @@ public class SettingUtils {
                     setting.setCreateDate(rs.getString("create_date"));
                     setting.setAuthor(rs.getString("author"));
                     setting.setTableAnnotation(rs.getString("table_annotation"));
+                    setting.setModuleName(rs.getString("module_name"));
+                    setting.setSubmoduleName(rs.getString("submodule_name"));
                     setting.setFilePath(rs.getString("file_path"));
                     setting.setIsOpen(rs.getString("is_open"));
                     setting.setIsDefault(rs.getString("is_default"));
@@ -179,12 +188,14 @@ public class SettingUtils {
 
             try {
                 conn = DbUtils.getConnection();
-                String sql = "update setting set package_name=?,create_date=?,author=?,file_path=? where  is_default = '1' ";
+                String sql = "update setting set package_name=?,create_date=?,author=?,module_name=?,submodule_name=?,file_path=? where  is_default = '1' ";
                 st= conn.prepareStatement(sql);
                 st.setString(1, setting.getPackageName());
                 st.setString(2, setting.getCreateDate());
                 st.setString(3, setting.getAuthor());
-                st.setString(4, setting.getFilePath());
+                st.setString(4, setting.getModuleName());
+                st.setString(5, setting.getSubmoduleName());                
+                st.setString(6, setting.getFilePath());
                 int result = st.executeUpdate();
 
             } catch (SQLException e) {
@@ -202,15 +213,17 @@ public class SettingUtils {
 
         try {
             conn = DbUtils.getConnection();
-            String sql = "update setting set package_name=?,create_date=?,author=?,table_annotation=?,file_path=?,is_open=? where  id = ? ";
+            String sql = "update setting set package_name=?,create_date=?,author=?,table_annotation=?,module_name=?,submodule_name=?,file_path=?,is_open=? where  id = ? ";
             st= conn.prepareStatement(sql);
             st.setString(1, setting.getPackageName());
             st.setString(2, setting.getCreateDate());
             st.setString(3, setting.getAuthor());
-            st.setString(4, setting.getTableAnnotation());
-            st.setString(5, setting.getFilePath());
-            st.setString(6, setting.getIsOpen());
-            st.setInt(7, setting.getId());
+            st.setString(4, setting.getTableAnnotation());          
+            st.setString(5, setting.getModuleName());
+            st.setString(6, setting.getSubmoduleName());        
+            st.setString(7, setting.getFilePath());
+            st.setString(8, setting.getIsOpen());
+            st.setInt(9, setting.getId());
             int result = st.executeUpdate();
 
         } catch (SQLException e) {
@@ -230,7 +243,7 @@ public class SettingUtils {
 
         try {
             conn = DbUtils.getConnection();
-            String sql = "insert into setting values(null,?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into setting values(null,?,?,?,?,?,?,?,?,?,?,?)";
 
             st= conn.prepareStatement(sql);
             st.setString(1, "");
@@ -239,9 +252,11 @@ public class SettingUtils {
             st.setString(4, setting.getCreateDate());
             st.setString(5, setting.getAuthor());
             st.setString(6, setting.getTableAnnotation());
-            st.setString(7, setting.getFilePath());
-            st.setString(8, setting.getIsOpen());
-            st.setString(9, "0");
+            st.setString(7, setting.getModuleName());
+            st.setString(8, setting.getSubmoduleName());	      
+            st.setString(9, setting.getFilePath());
+            st.setString(10, setting.getIsOpen());
+            st.setString(11, "0");
             int result = st.executeUpdate();
 
         } catch (SQLException e) {
@@ -251,40 +266,6 @@ public class SettingUtils {
         }
     }
 
-    public void add() {
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-
-        try {
-            // 获取连接
-            conn = DbUtils.getConnection();
-
-            // 编写sql
-            String sql = "insert into category values (?,?)";
-
-            // 创建语句执行者
-            st= conn.prepareStatement(sql);
-
-            //设置参数
-            st.setString(1, "10");
-            st.setString(2, "测试目录");
-
-            // 执行sql
-            int i = st.executeUpdate();
-
-            if(i==1) {
-                System.out.println("数据添加成功！");
-            }else {
-                System.out.println("数据添加失败！");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            DbUtils.colseResource(conn, st, rs);
-        }
-
-    }
+  
 
 }

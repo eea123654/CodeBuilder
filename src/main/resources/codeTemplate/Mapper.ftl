@@ -1,38 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="${package_name}.repository.mybatis.${table_name}DAO">
+package com.jeeplus.modules.${package_name}.mapper;
 
+import org.springframework.stereotype.Repository;
+import com.jeeplus.core.persistence.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+import com.jeeplus.modules.${package_name}.entity.${table_name};
 
-    <sql id="oaLzyTestColumns">
-        <#if model_column?exists>
-            <#list model_column as model>
-            a.id AS "id",
-            </#list>
-        </#if>
-    </sql>
-
-
-
-    <resultMap id="${table_name}DTOResultMap" type="${package_name}.dto.${table_name}DTO"></resultMap>
-
-    <sql id="findDtoSql">
-        select * from (
-        select * from  ${table_name_small} temp
-        ) t
-    </sql>
-
-    <select id="findDTOById" parameterType="String" resultMap="${table_name}DTOResultMap">
-        <include refid="findDtoSql"></include>
-        <where>
-            and t.id = ${r'#{id}'}
-        </where>
-    </select>
-
-    <select id="find${table_name}Page" parameterType="${package_name}.dto.${table_name}DTO" resultMap="${table_name}DTOResultMap">
-        <include refid="findDtoSql" />
-        <where>
-
-        </where>
-    </select>
-
-</mapper>
+/**
+ * ${table_name} MAPPER接口
+ * @author ${author}
+ * @version ${date}
+ */
+@Mapper
+@Repository
+public interface ${table_name}Mapper extends BaseMapper<${table_name}> {
+	
+}

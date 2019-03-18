@@ -34,6 +34,8 @@ public class CodeBuildUtils {
     private String AUTHOR;
     private String packageName;
     private String tableAnnotation;
+    private String moduleName;
+    private String submoduleName;
     private String diskPath;
 
     //hy:因为某些原因无法自动注入参数，所以用这种方法
@@ -77,6 +79,8 @@ public class CodeBuildUtils {
         this.AUTHOR=setting.getAuthor();
         this.packageName=setting.getPackageName();
         this.tableAnnotation=setting.getTableAnnotation();
+        this.moduleName=setting.getModuleName();
+        this.submoduleName=setting.getSubmoduleName();
         this.diskPath=setting.getFilePath();
     }
 
@@ -87,7 +91,14 @@ public class CodeBuildUtils {
             DatabaseMetaData databaseMetaData = connection.getMetaData();
             ResultSet resultSet = databaseMetaData.getColumns(null,"%", tableName,"%");
             //生成Mapper文件
-            //generateMapperFile(resultSet);
+            generateMapperFile(resultSet);
+            //生成MapperXml文件
+            generateMapperXmlFile(resultSet);    //待修改     
+            //生成Model（实体类）文件
+            generateModelFile(resultSet);
+            //生成Controller层文件
+            generateControllerFile(resultSet);	//待修改     
+            
             /*//生成Dao文件
             generateDaoFile(resultSet);
             //生成Repository文件
@@ -100,8 +111,7 @@ public class CodeBuildUtils {
             generateControllerFile(resultSet);
             //生成DTO文件
             generateDTOFile(resultSet);*/
-            //生成Model文件
-            generateModelFile(resultSet);
+            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally{
@@ -203,6 +213,17 @@ public class CodeBuildUtils {
         generateFileByTemplate(templateName,mapperFile,dataMap);
 
     }
+    
+    private void generateMapperXmlFile(ResultSet resultSet) throws Exception{
+        final String suffix = "Mapper.java";
+        final String path = diskPath + changeTableName + suffix;
+        final String templateName = "Mapper.ftl";
+        File mapperFile = new File(path);
+        Map<String,Object> dataMap = new HashMap<>();
+        generateFileByTemplate(templateName,mapperFile,dataMap);
+
+    }
+    
 
     private void generateFileByTemplate(final String templateName,File file,Map<String,Object> dataMap) throws Exception{
         Template template = FreeMarkerTemplateUtils.getTemplate(templateName);
@@ -213,6 +234,8 @@ public class CodeBuildUtils {
         dataMap.put("date",CURRENT_DATE);
         dataMap.put("package_name",packageName);
         dataMap.put("table_annotation",tableAnnotation);
+        dataMap.put("module_name",moduleName);
+        dataMap.put("submodule_name",submoduleName);
         Writer out = new BufferedWriter(new OutputStreamWriter(fos, "utf-8"),10240);
         template.process(dataMap,out);
     }
