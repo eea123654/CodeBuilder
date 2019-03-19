@@ -1,7 +1,7 @@
-package com.jeeplus.modules.${package_name}.entity;
+package ${package_name}.modules.<#if module_name?? && module_name != "">${module_name}.</#if><#if submodule_name?? && submodule_name != "">${submodule_name}.</#if>entity;
 
-import com.jeeplus.core.persistence.DataEntity;
-import com.jeeplus.common.utils.excel.annotation.ExcelField;
+import ${package_name}.core.persistence.DataEntity;
+import ${package_name}.common.utils.excel.annotation.ExcelField;
 
 /**
 * 描述：${table_annotation}实体类
