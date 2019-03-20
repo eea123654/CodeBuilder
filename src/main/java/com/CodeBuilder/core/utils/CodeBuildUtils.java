@@ -27,6 +27,7 @@ public class CodeBuildUtils {
     private static String USER;
     private static String PASSWORD;
     private static String DRIVER;
+    private static String ishxmodel;
 
     private String tableName;
     private String changeTableName;
@@ -37,6 +38,7 @@ public class CodeBuildUtils {
     private String moduleName;
     private String submoduleName;
     private String diskPath;
+
 
     //hy:因为某些原因无法自动注入参数，所以用这种方法
     static {
@@ -65,7 +67,7 @@ public class CodeBuildUtils {
         USER=pro.getProperty("spring.datasource.username");
         PASSWORD=pro.getProperty("spring.datasource.password");
         DRIVER=pro.getProperty("spring.datasource.driver-class-name");
-        
+        ishxmodel=pro.getProperty("ishxmodel");
     }
 
 
@@ -205,6 +207,7 @@ public class CodeBuildUtils {
         dataMap.put("table_annotation",tableAnnotation);
         dataMap.put("module_name",moduleName);
         dataMap.put("submodule_name",submoduleName);
+        dataMap.put("ishxmodel",ishxmodel);
         Writer out = new BufferedWriter(new OutputStreamWriter(fos, "utf-8"),10240);
         template.process(dataMap,out);
     }
