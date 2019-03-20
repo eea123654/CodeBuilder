@@ -213,6 +213,9 @@ public class CodeBuildUtils {
     }
 
     public String replaceUnderLineAndUpperCase(String str){
+    	if(str.endsWith("_")){
+    		str = str.substring(0,str.length() - 1);
+    	}
         StringBuffer sb = new StringBuffer();
         sb.append(str);
         int count = sb.indexOf("_");
