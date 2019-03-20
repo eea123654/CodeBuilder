@@ -90,16 +90,34 @@ public class CodeBuildUtils {
             Connection connection = getConnection();
             DatabaseMetaData databaseMetaData = connection.getMetaData();
             ResultSet resultSet = databaseMetaData.getColumns(null,"%", tableName,"%");
+
+            //hy：注意 jdbc中的resultSet不可多次使用
+            List<DataColumn> columnClassList = new ArrayList<>();
+            DataColumn columnClass = null;
+            while(resultSet.next()){
+                columnClass = new DataColumn();
+                //获取字段名称
+                columnClass.setColumnName(resultSet.getString("COLUMN_NAME"));
+                //获取字段类型
+                columnClass.setColumnType(resultSet.getString("TYPE_NAME"));
+                //转换字段名称，如 sys_name 变成 SysName
+                columnClass.setChangeColumnName(replaceUnderLineAndUpperCase(resultSet.getString("COLUMN_NAME")));
+                //字段在数据库的注释
+                columnClass.setColumnComment(resultSet.getString("REMARKS"));
+                columnClassList.add(columnClass);
+            }
+
+
             //生成Model（实体类）文件
-            generateModelFile(resultSet);
+            generateModelFile(columnClassList);
             //生成Mapper文件
-            generateMapperFile(resultSet);
+            generateMapperFile(columnClassList);
             //生成MapperXml文件
-            generateMapperXmlFile(resultSet);
+            generateMapperXmlFile(columnClassList);
             //生成Controller层文件
-            generateControllerFile(resultSet);	//待修改
+            generateControllerFile(columnClassList);
             //生成服务层文件
-            generateServiceFile(resultSet);
+            generateServiceFile(columnClassList);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -108,37 +126,30 @@ public class CodeBuildUtils {
         }
     }
 
-    private void generateModelFile(ResultSet resultSet) throws Exception{
+    private void generateModelFile(List<DataColumn> columnClassList) throws Exception{
 
         final String suffix = ".java";
         final String path = diskPath + changeTableName + suffix;
         final String templateName = "Model.ftl";
         File mapperFile = new File(path);
-        List<DataColumn> columnClassList = new ArrayList<>();
-        DataColumn columnClass = null;
-        while(resultSet.next()){
-
-            //id字段略过
-            if(resultSet.getString("COLUMN_NAME").equals("id")) continue;
-            columnClass = new DataColumn();
-            //获取字段名称
-            columnClass.setColumnName(resultSet.getString("COLUMN_NAME"));
-            //获取字段类型
-            columnClass.setColumnType(resultSet.getString("TYPE_NAME"));
-            //转换字段名称，如 sys_name 变成 SysName
-            columnClass.setChangeColumnName(replaceUnderLineAndUpperCase(resultSet.getString("COLUMN_NAME")));
-            //字段在数据库的注释
-            columnClass.setColumnComment(resultSet.getString("REMARKS"));
-            columnClassList.add(columnClass);
+        List<DataColumn> list = new ArrayList<>();
+        list.addAll(columnClassList);
+        //需要过滤掉id
+        for(DataColumn dc :list){
+            if ("id".equals(dc.getColumnName())){
+                list.remove(dc);
+                break;
+            }
         }
+
         Map<String,Object> dataMap = new HashMap<>();
-        dataMap.put("model_column",columnClassList);
+        dataMap.put("model_column",list);
         generateFileByTemplate(templateName,mapperFile,dataMap);
 
     }
 
 
-    private void generateControllerFile(ResultSet resultSet) throws Exception{
+    private void generateControllerFile(List<DataColumn> columnClassList) throws Exception{
         final String suffix = "Controller.java";
         final String path = diskPath + changeTableName + suffix;
         final String templateName = "Controller.ftl";
@@ -147,7 +158,7 @@ public class CodeBuildUtils {
         generateFileByTemplate(templateName,mapperFile,dataMap);
     }
 
-    private void generateServiceFile(ResultSet resultSet) throws Exception{
+    private void generateServiceFile(List<DataColumn> columnClassList) throws Exception{
         final String suffix = "Service.java";
         final String path = diskPath + changeTableName + suffix;
         final String templateName = "Service.ftl";
@@ -159,7 +170,7 @@ public class CodeBuildUtils {
 
 
 
-    private void generateMapperFile(ResultSet resultSet) throws Exception{
+    private void generateMapperFile(List<DataColumn> columnClassList) throws Exception{
         final String suffix = "Mapper.java";
         final String path = diskPath + changeTableName + suffix;
         final String templateName = "Mapper.ftl";
@@ -169,36 +180,15 @@ public class CodeBuildUtils {
 
     }
     
-    private void generateMapperXmlFile(ResultSet resultSet) throws Exception{
+    private void generateMapperXmlFile(List<DataColumn> columnClassList) throws Exception{
         final String suffix = "Mapper.xml";
         final String path = diskPath + changeTableName + suffix;
         final String templateName = "MapperXml.ftl";
         File mapperFile = new File(path);
-
-
-
-        List<DataColumn> columnClassList = new ArrayList<>();
-        DataColumn columnClass = null;
-        while(resultSet.next()){
-
-            //id字段略过
-            //if(resultSet.getString("COLUMN_NAME").equals("id")) continue;
-            columnClass = new DataColumn();
-            //获取字段名称
-            columnClass.setColumnName(resultSet.getString("COLUMN_NAME"));
-            //获取字段类型
-            columnClass.setColumnType(resultSet.getString("TYPE_NAME"));
-            //转换字段名称，如 sys_name 变成 SysName
-            columnClass.setChangeColumnName(replaceUnderLineAndUpperCase(resultSet.getString("COLUMN_NAME")));
-            //字段在数据库的注释
-            columnClass.setColumnComment(resultSet.getString("REMARKS"));
-            columnClassList.add(columnClass);
-        }
         Map<String,Object> dataMap = new HashMap<>();
-        dataMap.put("model_column",columnClassList);
-
-
-
+        List<DataColumn> list = new ArrayList<>();
+        list.addAll(columnClassList);
+        dataMap.put("model_column",list);
         generateFileByTemplate(templateName,mapperFile,dataMap);
 
     }
