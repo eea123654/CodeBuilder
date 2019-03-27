@@ -110,13 +110,12 @@ public class CodeBuildUtils {
             }
 
 
-            //以多线程的方式生成文件
+            //以匿名类的方式使用多线程生成文件
 
             Thread t1= new Thread(){
                 public void run(){
                     //生成Model（实体类）文件
                     try {
-                        System.out.println("t1");
                         generateModelFile(columnClassList);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -129,7 +128,6 @@ public class CodeBuildUtils {
                 public void run(){
                     try {
                         //生成Mapper文件
-                        System.out.println("t2");
                         generateMapperFile(columnClassList);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -142,7 +140,6 @@ public class CodeBuildUtils {
                 public void run(){
                     try {
                         //生成MapperXml文件
-                        System.out.println("t3");
                         generateMapperXmlFile(columnClassList);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -155,7 +152,6 @@ public class CodeBuildUtils {
                 public void run(){
                     try {
                         //生成Controller层文件
-                        System.out.println("t4");
                         generateControllerFile(columnClassList);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -168,7 +164,6 @@ public class CodeBuildUtils {
                 public void run(){
                     try {
                         //生成服务层文件
-                        System.out.println("t5");
                         generateServiceFile(columnClassList);
                     } catch (Exception e) {
                         e.printStackTrace();
