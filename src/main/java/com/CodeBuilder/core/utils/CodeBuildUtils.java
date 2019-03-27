@@ -110,16 +110,73 @@ public class CodeBuildUtils {
             }
 
 
-            //生成Model（实体类）文件
-            generateModelFile(columnClassList);
-            //生成Mapper文件
-            generateMapperFile(columnClassList);
-            //生成MapperXml文件
-            generateMapperXmlFile(columnClassList);
-            //生成Controller层文件
-            generateControllerFile(columnClassList);
-            //生成服务层文件
-            generateServiceFile(columnClassList);
+            //以多线程的方式生成文件
+
+            Thread t1= new Thread(){
+                public void run(){
+                    //生成Model（实体类）文件
+                    try {
+                        System.out.println("t1");
+                        generateModelFile(columnClassList);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            t1.start();
+
+            Thread t2= new Thread(){
+                public void run(){
+                    try {
+                        //生成Mapper文件
+                        System.out.println("t2");
+                        generateMapperFile(columnClassList);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            t2.start();
+
+            Thread t3= new Thread(){
+                public void run(){
+                    try {
+                        //生成MapperXml文件
+                        System.out.println("t3");
+                        generateMapperXmlFile(columnClassList);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            t3.start();
+
+            Thread t4= new Thread(){
+                public void run(){
+                    try {
+                        //生成Controller层文件
+                        System.out.println("t4");
+                        generateControllerFile(columnClassList);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            t4.start();
+
+            Thread t5= new Thread(){
+                public void run(){
+                    try {
+                        //生成服务层文件
+                        System.out.println("t5");
+                        generateServiceFile(columnClassList);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            t5.start();
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
